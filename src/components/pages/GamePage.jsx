@@ -21,6 +21,7 @@ const GamePage = () => {
   const [error, setError] = useState("");
   const [score, setScore] = useState(0);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState("Medium");
   const { progress, updateHighScore, incrementPlayTime } = useGameProgress(gameId);
 
   useEffect(() => {
@@ -74,7 +75,7 @@ const GamePage = () => {
       );
     }
 
-    return <GameComponent onScoreUpdate={handleScoreUpdate} />;
+return <GameComponent onScoreUpdate={handleScoreUpdate} selectedDifficulty={selectedDifficulty} />;
   };
 
   if (loading) {

@@ -7,7 +7,12 @@
     "description": "Form words from scrambled letters and discover their meanings. Test your vocabulary while learning new words in this engaging word puzzle adventure.",
     "thumbnail": "/images/word-explorer.jpg",
     "playCount": 1247,
-    "difficulty": "Easy",
+"difficulty": {
+      "range": "Easy-Medium",
+      "Easy": { "timeLimit": 240, "complexity": "3-5 letter words", "scoreMultiplier": 1 },
+      "Medium": { "timeLimit": 180, "complexity": "4-8 letter words", "scoreMultiplier": 1.5 },
+      "Hard": { "timeLimit": 120, "complexity": "6-12 letter words", "scoreMultiplier": 2 }
+    },
     "educationalValue": "Vocabulary building, spelling improvement, and word recognition skills",
     "featured": true
   },
@@ -19,7 +24,12 @@
     "description": "Solve complex logic puzzles using deductive reasoning. Use clues to determine relationships and fill the grid with logical deductions.",
     "thumbnail": "/images/logic-grid.jpg",
     "playCount": 892,
-    "difficulty": "Medium",
+"difficulty": {
+      "range": "Medium-Hard",
+      "Easy": { "gridSize": "3x3", "complexity": "Simple logic", "scoreMultiplier": 1 },
+      "Medium": { "gridSize": "4x4", "complexity": "Complex logic", "scoreMultiplier": 1.5 },
+      "Hard": { "gridSize": "5x5", "complexity": "Advanced reasoning", "scoreMultiplier": 2 }
+    },
     "educationalValue": "Critical thinking, logical reasoning, and problem-solving methodologies",
     "featured": true
   },
@@ -31,7 +41,12 @@
     "description": "Drag and drop historical events into chronological order. Learn about important moments in history while developing timeline skills.",
     "thumbnail": "/images/timeline-sort.jpg",
     "playCount": 2156,
-    "difficulty": "Medium",
+"difficulty": {
+      "range": "Easy-Hard",
+      "Easy": { "levels": 2, "complexity": "3-4 events", "scoreMultiplier": 1 },
+      "Medium": { "levels": 3, "complexity": "4-6 events", "scoreMultiplier": 1.5 },
+      "Hard": { "levels": 3, "complexity": "5-7 events", "scoreMultiplier": 2 }
+    },
     "educationalValue": "Historical knowledge, chronological thinking, and cause-effect understanding",
     "featured": true
   },
@@ -43,7 +58,12 @@
     "description": "Quick-fire arithmetic problems with increasing difficulty. Build mental math skills and speed while working against the clock.",
     "thumbnail": "/images/math-blitz.jpg",
     "playCount": 3421,
-    "difficulty": "Easy",
+"difficulty": {
+      "range": "Easy-Hard",
+      "Easy": { "timeLimit": 90, "complexity": "Basic arithmetic", "scoreMultiplier": 1 },
+      "Medium": { "timeLimit": 60, "complexity": "Mixed operations", "scoreMultiplier": 1.5 },
+      "Hard": { "timeLimit": 45, "complexity": "Complex problems", "scoreMultiplier": 2 }
+    },
     "educationalValue": "Mental math skills, calculation speed, and numerical confidence building",
     "featured": false
   },
@@ -55,7 +75,12 @@
     "description": "Match related pairs in this classic memory game featuring educational content like countries-capitals and chemical elements.",
     "thumbnail": "/images/memory-match.jpg",
     "playCount": 1876,
-    "difficulty": "Easy",
+"difficulty": {
+      "range": "Easy-Hard",
+      "Easy": { "pairs": 6, "complexity": "Basic facts", "scoreMultiplier": 1 },
+      "Medium": { "pairs": 8, "complexity": "Mixed content", "scoreMultiplier": 1.5 },
+      "Hard": { "pairs": 10, "complexity": "Advanced facts", "scoreMultiplier": 2 }
+    },
     "educationalValue": "Memory enhancement, factual knowledge acquisition, and concentration skills",
     "featured": false
   }

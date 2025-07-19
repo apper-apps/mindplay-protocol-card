@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import ApperIcon from "@/components/ApperIcon";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
 
-const MathBlitz = ({ onScoreUpdate }) => {
+const MathBlitz = ({ onScoreUpdate, selectedDifficulty = "Medium" }) => {
   const [currentProblem, setCurrentProblem] = useState(null);
   const [userAnswer, setUserAnswer] = useState("");
   const [score, setScore] = useState(0);
@@ -13,16 +13,18 @@ const MathBlitz = ({ onScoreUpdate }) => {
   const [streak, setStreak] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [difficulty, setDifficulty] = useState(1);
+  const [difficultyLevel, setDifficultyLevel] = useState(1);
   const [problemsCompleted, setProblemsCompleted] = useState(0);
+  const [selectedDiff, setSelectedDiff] = useState("Medium");
+  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
 
-  useEffect(() => {
-    if (gameStarted && !gameOver) {
-      generateProblem();
-    }
-  }, [gameStarted, difficulty]);
+  const difficultyConfigs = {
+    Easy: { timeLimit: 90, maxNumber: 12, progressionRate: 15 },
+    Medium: { timeLimit: 60, maxNumber: 20, progressionRate: 10 },
+    Hard: { timeLimit: 45, maxNumber: 50, progressionRate: 8 }
+  };
 
-  useEffect(() => {
+useEffect(() => {
     let timer;
     if (gameStarted && timeLeft > 0 && !gameOver) {
       timer = setTimeout(() => {
@@ -35,30 +37,38 @@ const MathBlitz = ({ onScoreUpdate }) => {
   }, [gameStarted, timeLeft, gameOver]);
 
   useEffect(() => {
+    if (gameStarted && !gameOver) {
+      generateProblem();
+    }
+  }, [gameStarted, difficultyLevel, selectedDiff]);
+
+  useEffect(() => {
     onScoreUpdate(score);
   }, [score, onScoreUpdate]);
 
   useEffect(() => {
-    // Increase difficulty every 10 problems
-    if (problemsCompleted > 0 && problemsCompleted % 10 === 0) {
-      setDifficulty(prev => Math.min(prev + 1, 5));
+    const config = difficultyConfigs[selectedDiff];
+    if (problemsCompleted > 0 && problemsCompleted % config.progressionRate === 0) {
+      setDifficultyLevel(prev => Math.min(prev + 1, 5));
     }
-  }, [problemsCompleted]);
-
-  const generateProblem = () => {
+  }, [problemsCompleted, selectedDiff]);
+const generateProblem = () => {
     let num1, num2, operator, answer;
     
-    const maxNum = Math.min(10 * difficulty, 50);
-    
-    switch (difficulty) {
+    const config = difficultyConfigs[selectedDiff];
+    const effectiveDifficulty = Math.min(difficultyLevel, 5);
+    const maxNum = Math.min(config.maxNumber * effectiveDifficulty, config.maxNumber * 3);
+      
+    switch (effectiveDifficulty) {
       case 1:
         // Addition only, small numbers
-        num1 = Math.floor(Math.random() * 10) + 1;
-        num2 = Math.floor(Math.random() * 10) + 1;
+        const range1 = selectedDiff === "Easy" ? 10 : selectedDiff === "Medium" ? 15 : 20;
+        num1 = Math.floor(Math.random() * range1) + 1;
+        num2 = Math.floor(Math.random() * range1) + 1;
         operator = "+";
         answer = num1 + num2;
         break;
-      
+        
       case 2:
         // Addition and subtraction
         num1 = Math.floor(Math.random() * 20) + 1;
@@ -143,15 +153,23 @@ const MathBlitz = ({ onScoreUpdate }) => {
     setCurrentProblem({ num1, num2, operator, answer });
     setUserAnswer("");
   };
+};
 
   const startGame = () => {
+    const config = difficultyConfigs[selectedDiff];
     setScore(0);
-    setTimeLeft(60);
+    setTimeLeft(config.timeLimit);
     setStreak(0);
     setGameStarted(true);
     setGameOver(false);
-    setDifficulty(1);
+    setDifficultyLevel(1);
     setProblemsCompleted(0);
+    setShowDifficultySelect(false);
+  };
+
+  const selectDifficulty = (difficulty) => {
+    setSelectedDiff(difficulty);
+    setShowDifficultySelect(false);
   };
 
   const endGame = () => {
@@ -160,14 +178,16 @@ const MathBlitz = ({ onScoreUpdate }) => {
     toast.success(`Game Over! Final score: ${score}`);
   };
 
-  const submitAnswer = () => {
+const submitAnswer = () => {
     if (!currentProblem || userAnswer === "") return;
 
     const answer = parseInt(userAnswer);
     if (answer === currentProblem.answer) {
-      const basePoints = difficulty * 10;
+      const baseDifficultyPoints = difficultyLevel * 10;
+      const difficultyMultiplier = selectedDiff === "Easy" ? 1 : selectedDiff === "Medium" ? 1.5 : 2;
+      const difficultyPoints = Math.round(baseDifficultyPoints * difficultyMultiplier);
       const streakBonus = Math.min(streak * 2, 50);
-      const totalPoints = basePoints + streakBonus;
+      const totalPoints = difficultyPoints + streakBonus;
       
       setScore(prev => prev + totalPoints);
       setStreak(prev => prev + 1);
@@ -181,28 +201,74 @@ const MathBlitz = ({ onScoreUpdate }) => {
       generateProblem();
     }
   };
-
-  const handleKeyPress = (e) => {
+const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       submitAnswer();
     }
   };
 
-  if (!gameStarted && !gameOver) {
+  if (showDifficultySelect) {
     return (
       <div className="text-center py-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-4 font-display">
           Math Blitz
         </h3>
         <p className="text-gray-600 mb-6 max-w-md mx-auto">
-          Solve math problems as quickly as possible! Difficulty increases every 10 problems.
+          Solve math problems as quickly as possible! Difficulty increases as you progress.
+        </p>
+        
+        <div className="bg-white rounded-lg p-6 mb-6 max-w-md mx-auto">
+          <h4 className="font-semibold text-gray-900 mb-4">Choose Difficulty:</h4>
+          <div className="space-y-3">
+            {Object.entries(difficultyConfigs).map(([level, config]) => (
+              <button
+                key={level}
+                onClick={() => selectDifficulty(level)}
+                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 ${
+                  selectedDiff === level
+                    ? "border-primary-500 bg-primary-50 text-primary-700"
+                    : "border-gray-200 bg-white hover:border-primary-300"
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="text-left">
+                    <div className="font-semibold">{level}</div>
+                    <div className="text-sm text-gray-600">
+                      {config.timeLimit}s • Max numbers: {config.maxNumber}
+                    </div>
+                  </div>
+                  <div className="text-sm">
+                    {level === "Easy" ? "1x" : level === "Medium" ? "1.5x" : "2x"} points
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        <Button onClick={startGame} size="lg" variant="primary" disabled={!selectedDiff}>
+          <ApperIcon name="Play" className="w-5 h-5 mr-2" />
+          Start Game
+        </Button>
+      </div>
+    );
+  }
+
+  if (!gameStarted && !gameOver) {
+    return (
+      <div className="text-center py-8">
+        <h3 className="text-2xl font-bold text-gray-900 mb-4 font-display">
+          Math Blitz - {selectedDiff}
+        </h3>
+        <p className="text-gray-600 mb-6 max-w-md mx-auto">
+          Solve math problems as quickly as possible! Difficulty increases as you progress.
         </p>
         <div className="bg-blue-50 rounded-lg p-4 mb-6 max-w-md mx-auto">
           <h4 className="font-semibold text-blue-900 mb-2">Game Rules:</h4>
           <ul className="text-sm text-blue-800 text-left space-y-1">
-            <li>• 60 seconds to solve as many problems as possible</li>
+            <li>• {difficultyConfigs[selectedDiff].timeLimit} seconds to solve problems</li>
             <li>• Consecutive correct answers build a streak bonus</li>
-            <li>• Difficulty increases every 10 problems</li>
+            <li>• Difficulty increases every {difficultyConfigs[selectedDiff].progressionRate} problems</li>
             <li>• Higher difficulty = more points per problem</li>
           </ul>
         </div>
@@ -224,8 +290,6 @@ const MathBlitz = ({ onScoreUpdate }) => {
         <div className="bg-gradient-to-r from-accent-500 to-accent-600 text-white p-6 rounded-xl mb-6">
           <h3 className="text-2xl font-bold mb-2 font-display">Game Complete!</h3>
           <p className="text-xl">Final Score: {score}</p>
-          <p className="text-accent-100">Problems Completed: {problemsCompleted}</p>
-          <p className="text-accent-100">Highest Difficulty: {difficulty}</p>
         </div>
         
         <Button onClick={startGame} variant="primary" size="lg">
@@ -236,7 +300,7 @@ const MathBlitz = ({ onScoreUpdate }) => {
     );
   }
 
-  return (
+return (
     <div className="max-w-2xl mx-auto">
       {/* Game Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -252,7 +316,7 @@ const MathBlitz = ({ onScoreUpdate }) => {
         </div>
         <div className="bg-white rounded-lg p-4 shadow-md text-center">
           <div className="text-sm text-gray-600">Level</div>
-          <div className="text-xl font-bold text-secondary-600">{difficulty}</div>
+          <div className="text-xl font-bold text-secondary-600">{difficultyLevel}</div>
         </div>
         <div className="bg-white rounded-lg p-4 shadow-md text-center">
           <div className="text-sm text-gray-600">Problems</div>
@@ -305,12 +369,12 @@ const MathBlitz = ({ onScoreUpdate }) => {
       {/* Progress Info */}
       <div className="bg-white rounded-lg p-4 shadow-md text-center">
         <div className="text-sm text-gray-600 mb-2">
-          Next level in {10 - (problemsCompleted % 10)} problems
+          Next level in {difficultyConfigs[selectedDiff].progressionRate - (problemsCompleted % difficultyConfigs[selectedDiff].progressionRate)} problems
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
             className="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((problemsCompleted % 10) / 10) * 100}%` }}
+            style={{ width: `${((problemsCompleted % difficultyConfigs[selectedDiff].progressionRate) / difficultyConfigs[selectedDiff].progressionRate) * 100}%` }}
           ></div>
         </div>
       </div>

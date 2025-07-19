@@ -4,37 +4,68 @@ import Button from "@/components/atoms/Button";
 import ApperIcon from "@/components/ApperIcon";
 import { toast } from "react-toastify";
 
-const WordExplorer = ({ onScoreUpdate }) => {
+const WordExplorer = ({ onScoreUpdate, selectedDifficulty = "Medium" }) => {
   const [letters, setLetters] = useState([]);
   const [selectedLetters, setSelectedLetters] = useState([]);
   const [currentWord, setCurrentWord] = useState("");
   const [foundWords, setFoundWords] = useState([]);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(180); // 3 minutes
+  const [timeLeft, setTimeLeft] = useState(180);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-
-  // Word dictionary (simplified for demo)
-  const validWords = {
-    "CAT": "A small domesticated carnivorous mammal",
-    "DOG": "A domesticated carnivorous mammal that typically has a long snout",
-    "REACT": "To respond or behave in a particular way in response to something",
-    "CODE": "A system of words, letters, figures, or symbols used to represent others",
-    "GAME": "A form of play or sport with rules",
-    "PLAY": "To engage in activity for enjoyment and recreation",
-    "WORD": "A single distinct meaningful element of speech or writing",
-    "LETTER": "A character representing one or more of the sounds used in speech",
-    "MIND": "The element of a person that enables them to be aware",
-    "LEARN": "To acquire knowledge or skills through experience or study",
-    "SMART": "Having or showing intelligence",
-    "BRAIN": "An organ that serves as the center of the nervous system",
-    "THINK": "To have a particular opinion, belief, or idea about someone or something",
-    "CREATE": "To bring something into existence",
-    "EXPLORE": "To investigate, study, or analyze",
-    "DISCOVER": "To find information, a place, or an object for the first time"
+  const [difficulty, setDifficulty] = useState("Medium");
+  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
+// Word dictionaries by difficulty
+  const wordSets = {
+    Easy: {
+      words: {
+        "CAT": "A small domesticated carnivorous mammal",
+        "DOG": "A domesticated carnivorous mammal",
+        "SUN": "The star at the center of our solar system",
+        "CAR": "A wheeled motor vehicle",
+        "RUN": "To move swiftly on foot",
+        "BIG": "Of considerable size or extent",
+        "RED": "The color of blood or fire",
+        "BAD": "Poor in quality or lower in standard"
+      },
+      letters: ["C", "A", "T", "D", "O", "G", "S", "U", "N", "R", "B", "I"],
+      timeLimit: 240
+    },
+    Medium: {
+      words: {
+        "CAT": "A small domesticated carnivorous mammal",
+        "DOG": "A domesticated carnivorous mammal that typically has a long snout",
+        "REACT": "To respond or behave in a particular way in response to something",
+        "CODE": "A system of words, letters, figures, or symbols used to represent others",
+        "GAME": "A form of play or sport with rules",
+        "PLAY": "To engage in activity for enjoyment and recreation",
+        "WORD": "A single distinct meaningful element of speech or writing",
+        "MIND": "The element of a person that enables them to be aware",
+        "SMART": "Having or showing intelligence",
+        "CREATE": "To bring something into existence"
+      },
+      letters: ["C", "A", "T", "R", "E", "D", "O", "G", "M", "I", "N", "L", "S", "P"],
+      timeLimit: 180
+    },
+    Hard: {
+      words: {
+        "REACT": "To respond or behave in a particular way in response to something",
+        "CODE": "A system of words, letters, figures, or symbols used to represent others",
+        "LETTER": "A character representing one or more of the sounds used in speech",
+        "LEARN": "To acquire knowledge or skills through experience or study",
+        "BRAIN": "An organ that serves as the center of the nervous system",
+        "THINK": "To have a particular opinion, belief, or idea about someone or something",
+        "CREATE": "To bring something into existence",
+        "EXPLORE": "To investigate, study, or analyze",
+        "DISCOVER": "To find information, a place, or an object for the first time",
+        "CHALLENGE": "A call to take part in a contest or competition",
+        "STRATEGY": "A plan of action designed to achieve a goal",
+        "BRILLIANT": "Exceptionally clever or talented"
+      },
+      letters: ["C", "H", "A", "L", "L", "E", "N", "G", "R", "S", "T", "Y", "B", "I", "D", "O"],
+      timeLimit: 120
+    }
   };
-
-  const letterSet = ["C", "A", "T", "R", "E", "D", "O", "G", "M", "I", "N", "L", "S", "B", "Y", "P"];
 
   useEffect(() => {
     initializeGame();
@@ -56,21 +87,28 @@ const WordExplorer = ({ onScoreUpdate }) => {
     onScoreUpdate(score);
   }, [score, onScoreUpdate]);
 
-  const initializeGame = () => {
-    // Shuffle and select 12 letters
-    const shuffled = [...letterSet].sort(() => Math.random() - 0.5);
+const initializeGame = () => {
+    const currentWordSet = wordSets[difficulty];
+    const shuffled = [...currentWordSet.letters].sort(() => Math.random() - 0.5);
     setLetters(shuffled.slice(0, 12));
     setSelectedLetters([]);
     setCurrentWord("");
     setFoundWords([]);
     setScore(0);
-    setTimeLeft(180);
+    setTimeLeft(currentWordSet.timeLimit);
     setGameStarted(false);
     setGameOver(false);
   };
 
-  const startGame = () => {
+const startGame = () => {
     setGameStarted(true);
+    setShowDifficultySelect(false);
+  };
+
+  const selectDifficulty = (selectedDiff) => {
+    setDifficulty(selectedDiff);
+    setShowDifficultySelect(false);
+    setTimeout(() => initializeGame(), 100);
   };
 
   const endGame = () => {
@@ -104,11 +142,14 @@ const WordExplorer = ({ onScoreUpdate }) => {
       return;
     }
 
-    if (validWords[currentWord]) {
-      const wordScore = currentWord.length * 10;
+const currentWordSet = wordSets[difficulty];
+    if (currentWordSet.words[currentWord]) {
+      const baseScore = currentWord.length * 10;
+      const difficultyMultiplier = difficulty === "Easy" ? 1 : difficulty === "Medium" ? 1.5 : 2;
+      const wordScore = Math.round(baseScore * difficultyMultiplier);
       setScore(prev => prev + wordScore);
       setFoundWords(prev => [...prev, currentWord]);
-      toast.success(`+${wordScore} points! ${validWords[currentWord]}`);
+      toast.success(`+${wordScore} points! ${currentWordSet.words[currentWord]}`);
       clearWord();
     } else {
       toast.error("Not a valid word!");
@@ -122,11 +163,58 @@ const WordExplorer = ({ onScoreUpdate }) => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  if (!gameStarted && !gameOver) {
+if (showDifficultySelect) {
     return (
       <div className="text-center py-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-4 font-display">
           Word Explorer
+        </h3>
+        <p className="text-gray-600 mb-6 max-w-md mx-auto">
+          Form words using the available letters. Longer words earn more points!
+        </p>
+        
+        <div className="bg-white rounded-lg p-6 mb-6 max-w-md mx-auto">
+          <h4 className="font-semibold text-gray-900 mb-4">Choose Difficulty:</h4>
+          <div className="space-y-3">
+            {Object.entries(wordSets).map(([level, config]) => (
+              <button
+                key={level}
+                onClick={() => selectDifficulty(level)}
+                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 ${
+                  difficulty === level
+                    ? "border-primary-500 bg-primary-50 text-primary-700"
+                    : "border-gray-200 bg-white hover:border-primary-300"
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="text-left">
+                    <div className="font-semibold">{level}</div>
+                    <div className="text-sm text-gray-600">
+                      {Math.floor(config.timeLimit / 60)}:{(config.timeLimit % 60).toString().padStart(2, '0')} minutes
+                    </div>
+                  </div>
+                  <div className="text-sm">
+                    {level === "Easy" ? "1x" : level === "Medium" ? "1.5x" : "2x"} points
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        <Button onClick={startGame} size="lg" variant="primary" disabled={!difficulty}>
+          <ApperIcon name="Play" className="w-5 h-5 mr-2" />
+          Start Game
+        </Button>
+      </div>
+    );
+  }
+
+  if (!gameStarted && !gameOver) {
+    return (
+      <div className="text-center py-8">
+        <h3 className="text-2xl font-bold text-gray-900 mb-4 font-display">
+          Word Explorer - {difficulty}
         </h3>
         <p className="text-gray-600 mb-6 max-w-md mx-auto">
           Form words using the available letters. Longer words earn more points!
