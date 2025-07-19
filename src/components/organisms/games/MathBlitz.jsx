@@ -149,11 +149,9 @@ const generateProblem = () => {
             break;
         }
     }
-    
-    setCurrentProblem({ num1, num2, operator, answer });
+setCurrentProblem({ num1, num2, operator, answer });
     setUserAnswer("");
   };
-};
 
   const startGame = () => {
     const config = difficultyConfigs[selectedDiff];
