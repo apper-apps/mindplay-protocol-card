@@ -1,0 +1,131 @@
+@import 'react-toastify/dist/ReactToastify.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .game-card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 overflow-hidden border-t-4;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium px-6 py-3 rounded-lg shadow-md hover:shadow-lg transform hover:scale-[0.98] transition-all duration-150;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white font-medium px-6 py-3 rounded-lg shadow-md hover:shadow-lg transform hover:scale-[0.98] transition-all duration-150;
+  }
+  
+  .category-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .game-container {
+    @apply bg-white rounded-xl shadow-lg p-6 max-w-4xl mx-auto;
+  }
+  
+  .score-display {
+    @apply text-3xl font-bold text-center p-4 bg-gradient-to-r from-accent-400 to-accent-500 text-white rounded-lg shadow-md;
+  }
+}
+
+/* Toast Customization */
+.Toastify__toast-container {
+  top: 5rem;
+  right: 1rem;
+  width: 320px;
+}
+
+.Toastify__toast {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.Toastify__toast--warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.Toastify__toast--info {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* Game Specific Styles */
+.letter-tile {
+  @apply w-12 h-12 bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold cursor-pointer hover:border-primary-500 hover:shadow-md transition-all duration-150;
+}
+
+.letter-tile.selected {
+  @apply border-primary-500 bg-primary-50;
+}
+
+.logic-cell {
+  @apply w-8 h-8 border border-gray-300 cursor-pointer transition-all duration-150 hover:bg-gray-50;
+}
+
+.logic-cell.selected {
+  @apply bg-primary-500 text-white;
+}
+
+.timeline-event {
+  @apply bg-white rounded-lg p-4 shadow-md cursor-move hover:shadow-lg transition-all duration-200 border-l-4 border-secondary-500;
+}
+
+.timeline-slot {
+  @apply min-h-[80px] border-2 border-dashed border-gray-300 rounded-lg p-2 transition-all duration-200;
+}
+
+.timeline-slot.drag-over {
+  @apply border-primary-500 bg-primary-50;
+}
+
+.memory-card {
+  @apply w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg cursor-pointer transform transition-all duration-300 hover:scale-105 shadow-md;
+}
+
+.memory-card.flipped {
+  @apply bg-white border-2 border-primary-500;
+}
+
+.math-problem {
+  @apply text-4xl font-bold text-center p-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl shadow-lg;
+}
+
+/* Confetti Animation */
+@keyframes confetti-fall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  animation: confetti-fall 3s linear infinite;
+  z-index: 1000;
+}

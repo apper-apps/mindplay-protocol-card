@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "id": "word-explorer",
+    "title": "Word Explorer",
+    "category": "Language",
+    "description": "Form words from scrambled letters and discover their meanings. Test your vocabulary while learning new words in this engaging word puzzle adventure.",
+    "thumbnail": "/images/word-explorer.jpg",
+    "playCount": 1247,
+    "difficulty": "Easy",
+    "educationalValue": "Vocabulary building, spelling improvement, and word recognition skills",
+    "featured": true
+  },
+  {
+    "Id": 2,
+    "id": "logic-grid",
+    "title": "Logic Grid Challenge",
+    "category": "Logic",
+    "description": "Solve complex logic puzzles using deductive reasoning. Use clues to determine relationships and fill the grid with logical deductions.",
+    "thumbnail": "/images/logic-grid.jpg",
+    "playCount": 892,
+    "difficulty": "Medium",
+    "educationalValue": "Critical thinking, logical reasoning, and problem-solving methodologies",
+    "featured": true
+  },
+  {
+    "Id": 3,
+    "id": "timeline-sort",
+    "title": "Historical Timeline Sort",
+    "category": "History",
+    "description": "Drag and drop historical events into chronological order. Learn about important moments in history while developing timeline skills.",
+    "thumbnail": "/images/timeline-sort.jpg",
+    "playCount": 2156,
+    "difficulty": "Medium",
+    "educationalValue": "Historical knowledge, chronological thinking, and cause-effect understanding",
+    "featured": true
+  },
+  {
+    "Id": 4,
+    "id": "math-blitz",
+    "title": "Math Blitz",
+    "category": "Math",
+    "description": "Quick-fire arithmetic problems with increasing difficulty. Build mental math skills and speed while working against the clock.",
+    "thumbnail": "/images/math-blitz.jpg",
+    "playCount": 3421,
+    "difficulty": "Easy",
+    "educationalValue": "Mental math skills, calculation speed, and numerical confidence building",
+    "featured": false
+  },
+  {
+    "Id": 5,
+    "id": "memory-match",
+    "title": "Memory Match Mania",
+    "category": "Memory",
+    "description": "Match related pairs in this classic memory game featuring educational content like countries-capitals and chemical elements.",
+    "thumbnail": "/images/memory-match.jpg",
+    "playCount": 1876,
+    "difficulty": "Easy",
+    "educationalValue": "Memory enhancement, factual knowledge acquisition, and concentration skills",
+    "featured": false
+  }
+]
