@@ -55,7 +55,11 @@ const GameCard = ({ game, onPlay, className }) => {
             </div>
 <div className="flex items-center">
               <ApperIcon name="BarChart3" className="w-4 h-4 mr-1" />
-              <span>{typeof game.difficulty === 'object' ? game.difficulty.range : game.difficulty}</span>
+              <span>{
+                typeof game.difficulty === 'object' 
+                  ? (game.difficulty?.range || 'Unknown')
+                  : (game.difficulty || 'Unknown')
+              }</span>
             </div>
           </div>
           
